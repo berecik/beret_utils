@@ -1,0 +1,57 @@
+from trace import log_content
+
+@log_content
+def example(a, b, c):
+    a = b + c
+    b = a + c
+    c = a + b
+    d = "hi there"
+    result = a + b + c
+    return result
+
+
+def test_log_content_working():
+    assert example(5,4,3) == 34
+
+
+@log_content
+def fun_a_10():
+    a = 10
+    return a
+
+@log_content
+def fun_b_20():
+    b = 20
+
+
+def test_fun_a_10(capsys):
+    fun_a_10()
+    out, err = capsys.readouterr()
+    assert out == "variable a = 10\n"
+
+
+def test_fun_b_20(capsys):
+    fun_b_20()
+    out, err = capsys.readouterr()
+    assert out == "variable b = 20\n"
+
+
+def test_example(capsys):
+    global a
+    a = 1
+    global b
+    b = 2
+    global c
+    c = 3
+    global d
+    d = 4
+    global e
+    e = 5
+    assert example(5, 4, 3) == 34
+    out, err = capsys.readouterr()
+    assert "variable a = 5" in out
+    assert "variable b = 4" in out
+    assert "variable c = 3" in out
+    assert "variable d = hi there" in out
+    assert "variable result = 34" in out
+    assert "variable e" not in out
