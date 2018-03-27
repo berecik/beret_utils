@@ -1,5 +1,5 @@
-from python_tools.trace import log_fun
-from python_tools.patterns import match, raw_match
+from python_utils.trace import log_fun
+from python_utils.patterns import match, raw_match
 
 import timeit
 
@@ -45,11 +45,11 @@ def match_all_patterns(match_fun):
 
 raw_match_time = timeit.timeit('match_all_patterns(raw_match)',
                                    setup="from __main__ import match_all_patterns, raw_match",
-                                   number=1000)
+                                   number=10)
 
 match_time = timeit.timeit('match_all_patterns(match)',
                                    setup="from __main__ import match_all_patterns, match",
-                                   number=1000)
+                                   number=10)
 
 print(raw_match_time, match_time)
 

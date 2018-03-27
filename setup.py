@@ -12,7 +12,7 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'python_tools'
+NAME = 'python_utils'
 DESCRIPTION = 'Subjective Python tools selection.'
 URL = 'https://github.com/berecik/python_utils'
 EMAIL = 'beret@hipisi.org.pl'

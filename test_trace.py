@@ -1,4 +1,4 @@
-from python_tools.trace import log_fun
+from python_utils.trace import log_fun
 
 @log_fun
 def example(a, b, c):
