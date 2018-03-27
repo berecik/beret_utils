@@ -4,8 +4,7 @@ import fnmatch
 import os
 import sys
 import urllib
-from http import client as httplib
-from urllib import parse as urlparse
+
 
 #fixed point Y combinator
 Y = ( lambda g: ( lambda f: g( lambda *arg: f( f )( *arg ) ) ) ( lambda f: g( lambda *arg: f( f )( *arg ) ) ) )
@@ -165,9 +164,6 @@ def tags( tag, text, lista = False ):
         return tags( tag, text[text.lower().find( '>', row_end ):], lista )
 
 
-
-
-
 def isFloat( s ):
     try:
         float( s )
@@ -183,34 +179,6 @@ def toType( s, to_type=int ):
         return x
     else:
         return True
-
-def urlExist( url ):
-
-
-    host, path = urlparse.urlsplit( url )[1:3]
-    if ':' in host:
-        host, port = host.split( ':', 1 )
-        try:
-            port = int( port )
-        except:
-            return False
-    else:
-        port = None
-
-    try:
-        connection = httplib.HTTPConnection( host, port = port )
-        connection.request( "HEAD", path )
-        resp = connection.getresponse()
-        if resp.status == 200:
-            found = url
-        elif resp.status == 302:
-            found = urlExist( urlparse.urljoin( url, resp.getheader( 'location', '' ) ) )
-        else:
-            found = False
-    except:
-        found = False
-
-    return found
 
 
 def all_files( root, patterns = "*", single_level = False, yield_folders = False ):

@@ -1,6 +1,6 @@
-from trace import log_content
+from python_tools.trace import log_fun
 
-@log_content
+@log_fun
 def example(a, b, c):
     a = b + c
     b = a + c
@@ -14,12 +14,12 @@ def test_log_content_working():
     assert example(5,4,3) == 34
 
 
-@log_content
+@log_fun
 def fun_a_10():
     a = 10
     return a
 
-@log_content
+@log_fun
 def fun_b_20():
     b = 20
 
@@ -27,13 +27,13 @@ def fun_b_20():
 def test_fun_a_10(capsys):
     fun_a_10()
     out, err = capsys.readouterr()
-    assert out == "variable a = 10\n"
+    assert "a=10" in out
 
 
 def test_fun_b_20(capsys):
     fun_b_20()
     out, err = capsys.readouterr()
-    assert out == "variable b = 20\n"
+    assert "b=20" in out
 
 
 def test_example(capsys):
@@ -49,9 +49,12 @@ def test_example(capsys):
     e = 5
     assert example(5, 4, 3) == 34
     out, err = capsys.readouterr()
-    assert "variable a = 5" in out
-    assert "variable b = 4" in out
-    assert "variable c = 3" in out
-    assert "variable d = hi there" in out
-    assert "variable result = 34" in out
-    assert "variable e" not in out
+    assert "a=5" in out
+    assert "b=4" in out
+    assert "c=3" in out
+    assert "a=7" in out
+    assert "b=10" in out
+    assert "c=17" in out
+    assert "d='hi there'" in out
+    assert "result=34" in out
+    assert "e=5" not in out

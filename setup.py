@@ -12,32 +12,21 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'mypackage'
-DESCRIPTION = 'My short description for my project.'
-URL = 'https://github.com/me/myproject'
-EMAIL = 'me@example.com'
-AUTHOR = 'Awesome Soul'
+NAME = 'python_tools'
+DESCRIPTION = 'Subjective Python tools selection.'
+URL = 'https://github.com/berecik/python_utils'
+EMAIL = 'beret@hipisi.org.pl'
+AUTHOR = 'Adam Beret Manczuk'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = None
+VERSION = 00.7
 
-# What packages are required for this module to be executed?
-REQUIRED = [
-    # 'requests', 'maya', 'records',
-]
-
-# The rest you shouldn't have to touch too much :)
-# ------------------------------------------------
-# Except, perhaps the License and Trove Classifiers!
-# If you do change the License, remember to change the Trove Classifier for that!
+REQUIRED = []
 
 here = os.path.abspath(os.path.dirname(__file__))
 
-# Import the README and use it as the long-description.
-# Note: this will only work if 'README.rst' is present in your MANIFEST.in file!
 with io.open(os.path.join(here, 'README.rst'), encoding='utf-8') as f:
     long_description = '\n' + f.read()
 
-# Load the package's __version__.py module as a dictionary.
 about = {}
 if not VERSION:
     with open(os.path.join(here, NAME, '__version__.py')) as f:

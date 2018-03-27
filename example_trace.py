@@ -1,5 +1,5 @@
-from trace import log_fun
-from patterns import match
+from python_tools.trace import log_fun
+from python_tools.patterns import match
 
 @log_fun
 def example(a, b, c):

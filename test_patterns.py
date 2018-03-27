@@ -1,4 +1,4 @@
-from patterns import match
+from python_tools.patterns import match
 
 
 def test_patterns_match_01():
