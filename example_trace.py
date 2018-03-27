@@ -1,5 +1,7 @@
 from python_tools.trace import log_fun
-from python_tools.patterns import match
+from python_tools.patterns import match, raw_match
+
+import timeit
 
 @log_fun
 def example(a, b, c):
@@ -9,10 +11,6 @@ def example(a, b, c):
     d = "hi there"
     result = a + b + c
     return result
-
-
-print(example(5,4,3))
-
 
 
 example_patterns = [
@@ -36,5 +34,23 @@ example_patterns = [
     ("ab*zcd", "abxycd")
 ]
 
-for txt in ("match({},{})={}".format(pattern, str, log_fun(path=False, content=False, ret=False)(match)(pattern, str)) for pattern, str in example_patterns):
-    print(txt)
+def match_all_patterns(match_fun):
+    for txt in (
+            "match({},{})={}".format(
+                pattern,
+                str,
+                log_fun(path=False, content=False, ret=False, call=False, log_fun=lambda x:x)(match_fun)(pattern, str)
+            ) for pattern, str in example_patterns):
+        pass
+
+raw_match_time = timeit.timeit('match_all_patterns(raw_match)',
+                                   setup="from __main__ import match_all_patterns, raw_match",
+                                   number=1000)
+
+match_time = timeit.timeit('match_all_patterns(match)',
+                                   setup="from __main__ import match_all_patterns, match",
+                                   number=1000)
+
+print(raw_match_time, match_time)
+
+print(example(5,4,3))

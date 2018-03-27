@@ -1,7 +1,8 @@
 import sys
 
-class TailRecurseException:
+class TailRecurseException(BaseException):
   def __init__( self, args, kwargs ):
+    super()
     self.args = args
     self.kwargs = kwargs
 

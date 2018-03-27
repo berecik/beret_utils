@@ -1,3 +1,4 @@
+from .tailRecursion import tail_call_optimized
 
 def rest(l):
     if len(l)>1:
@@ -5,7 +6,7 @@ def rest(l):
     else:
         return None
 
-def match(pattern, str, star = False, at = False):
+def raw_match(pattern, str, star = False, at = False):
 
     if pattern is None:
         if str is None:
@@ -48,3 +49,5 @@ def match(pattern, str, star = False, at = False):
 
     return False
 
+def match(pattern, str, star = False, at = False):
+    return tail_call_optimized(raw_match)(pattern, str, star, at)
