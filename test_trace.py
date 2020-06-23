@@ -6,8 +6,7 @@ def example(a, b, c):
     b = a + c
     c = a + b
     d = "hi there"
-    result = a + b + c
-    return result
+    return a + b + c
 
 
 def test_log_content_working():
@@ -16,8 +15,7 @@ def test_log_content_working():
 
 @log_fun
 def fun_a_10():
-    a = 10
-    return a
+    return 10
 
 @log_fun
 def fun_b_20():

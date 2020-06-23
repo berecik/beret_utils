@@ -9,8 +9,7 @@ def example(a, b, c):
     b = a + c
     c = a + b
     d = "hi there"
-    result = a + b + c
-    return result
+    return a + b + c
 
 
 example_patterns = [
@@ -35,7 +34,7 @@ example_patterns = [
 ]
 
 def match_all_patterns(match_fun):
-    for txt in (
+    for _ in (
             "match({},{})={}".format(
                 pattern,
                 str,

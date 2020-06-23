@@ -39,10 +39,7 @@ def try_int(data, default=None):
 
 def _get_write(f):
     if f:
-        if f == True:
-            _debug_file = open(DEBUG_FILE, 'a')
-        else:
-            _debug_file = f
+        _debug_file = open(DEBUG_FILE, 'a') if f == True else f
         return _debug_file.write
     return False
 
@@ -55,7 +52,7 @@ def get_pp(*args, **kwargs):
 
 
 def pp(txt, parse=None, cout=_cout, f=True, string=None):
-    if string==None:
+    if string is None:
         string = not cout
     if parse == 'json':
         _txt = json.loads(txt)
@@ -79,10 +76,7 @@ def p(parse=None, cout=_cout, f=True, **kwargs):
 
 
 def jprint(json_txt, f=False):
-    if f:
-        cout = False
-    else:
-        cout = True
+    cout = False if f else True
     return pp(txt=json_txt, parse='json', cout=cout, f=f)
 
 

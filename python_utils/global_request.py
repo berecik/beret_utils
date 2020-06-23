@@ -27,14 +27,12 @@ def get_current_user():
 
 def get_current_state():
     request = get_current_request()
-    current_state = urllib.urlencode(request.GET)
-    return current_state
+    return urllib.urlencode(request.GET)
 
 
 def get_client_ip(request=None):
     if not request:
         request = get_current_request()
-    PRIVATE_IPS_PREFIX = ('10.', '172.', '192.', '127.')
     remote_address = request.META.get('REMOTE_ADDR')
     # set the default value of the ip to be the REMOTE_ADDR if available
     # else None
@@ -44,6 +42,7 @@ def get_client_ip(request=None):
     x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
     if x_forwarded_for:
         proxies = x_forwarded_for.split(',')
+        PRIVATE_IPS_PREFIX = ('10.', '172.', '192.', '127.')
         # remove the private ips from the beginning
         while (len(proxies) > 0 and
                 proxies[0].startswith(PRIVATE_IPS_PREFIX)):
