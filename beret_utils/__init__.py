@@ -15,7 +15,7 @@ from .bereTools import url2txt
 from .config import EnvValue
 from .config import get_config
 from .imap import Imap
-from .path import get_path
+from .path import path_fun
 from .patterns import match
 from .singleton import Singleton
 from .tail_recursion import tail_call_optimized

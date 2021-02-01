@@ -63,8 +63,8 @@ class ConfigBaseClass(MappingConst):
         return values
 
     def __init__(self):
-        self.__dict__ = self.get_values()
         super().__init__()
+        self.__dict__ = self.get_values()
 
 
 def get_config(defaults, env_files):

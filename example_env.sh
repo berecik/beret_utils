@@ -1,0 +1,5 @@
+POSTGRES_DB=test_db_env
+POSTGRES_USER=postgres_env
+POSTGRES_PASSWORD=password_env
+POSTGRES_HOST=host_env
+ENV_PATH=..

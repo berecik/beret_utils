@@ -64,7 +64,7 @@ class MappingAttrs(MappingDict):
         self.__delitem__(item)
 
 
-class MappingConst(MappingAttrs):
+class MappingConst(MappingDict):
     read_only_exception = PermissionError
 
     def __read_only(self, *args, **kwargs):

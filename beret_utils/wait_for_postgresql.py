@@ -3,7 +3,7 @@ import time
 
 import psycopg2
 
-NAME = os.environ.get('POSTGRES_DB', '../python_indicators')
+NAME = os.environ.get('POSTGRES_DB', 'test_db')
 USER = os.environ.get('POSTGRES_USER', 'postgres')
 PASSWORD = os.environ.get('POSTGRES_PASSWORD', 'postgres')
 HOST = os.environ.get('POSTGRES_HOST', 'localhost')
