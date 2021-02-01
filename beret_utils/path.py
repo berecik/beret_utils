@@ -2,8 +2,6 @@ import os
 
 
 def get_path():
-
-    # BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     BASE_DIR = os.getcwd()
 
     def __path(file_name):

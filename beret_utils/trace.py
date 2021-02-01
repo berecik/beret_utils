@@ -1,10 +1,10 @@
-import sys
 import pprint
-
+import sys
 
 _pp = pprint.PrettyPrinter(indent=2)
 
 LOG_EVENTS = ('return', 'call')
+
 
 def log_fun(*args, **kwargs):
     """
@@ -51,6 +51,7 @@ def log_fun(*args, **kwargs):
                     old_log(frame, event, arg)
 
                 return _log_return_wrapper
+
             return _log_return_wrapper
 
         def _wrapper(*args, **kwargs):
@@ -61,7 +62,7 @@ def log_fun(*args, **kwargs):
             except:
                 raise
             else:
-                if(show_return):
+                if (show_return):
                     log_fun("return {}\n".format(result))
                 return result
             finally:
@@ -74,13 +75,14 @@ def log_fun(*args, **kwargs):
 
     return log_content
 
-def info( object, spacing = 10, collapse = 1 ):
+
+def info(object, spacing=10, collapse=1):
     "print any object's method and their docs"
-    methodList = [method for method in dir( object ) if callable( getattr( object, method ) )]
-    processFunc = collapse and ( lambda s: " ".join( s.split() ) ) or ( lambda s: s )
+    methodList = [method for method in dir(object) if callable(getattr(object, method))]
+    processFunc = collapse and (lambda s: " ".join(s.split())) or (lambda s: s)
     print(
-        "\n".join( ["%s %s" %
-                     ( method.ljust( spacing ),
-                      processFunc( str( getattr( object, method ).__doc__ ) ) )
-                     for method in methodList] )
-          )
+        "\n".join(["%s %s" %
+                   (method.ljust(spacing),
+                    processFunc(str(getattr(object, method).__doc__)))
+                   for method in methodList])
+    )

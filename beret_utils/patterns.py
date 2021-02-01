@@ -2,14 +2,13 @@ from .tail_recursion import tail_call_optimized
 
 
 def rest(l):
-    if len(l)>1:
+    if len(l) > 1:
         return l[1:]
     else:
         return None
 
 
 def raw_match(pattern, _str, star=False, at=False):
-
     if pattern is None:
         if _str is None or star:
             return True

@@ -1,7 +1,7 @@
-from beret_utils.trace import log_fun
-from beret_utils.patterns import match, raw_match
-
 import timeit
+
+from beret_utils.trace import log_fun
+
 
 @log_fun
 def example(a, b, c):
@@ -33,23 +33,25 @@ example_patterns = [
     ("ab*zcd", "abxycd")
 ]
 
+
 def match_all_patterns(match_fun):
     for _ in (
             "match({},{})={}".format(
                 pattern,
                 str,
-                log_fun(path=False, content=False, ret=False, call=False, log_fun=lambda x:x)(match_fun)(pattern, str)
+                log_fun(path=False, content=False, ret=False, call=False, log_fun=lambda x: x)(match_fun)(pattern, str)
             ) for pattern, str in example_patterns):
         pass
 
+
 raw_match_time = timeit.timeit('match_all_patterns(raw_match)',
-                                   setup="from __main__ import match_all_patterns, raw_match",
-                                   number=10)
+                               setup="from __main__ import match_all_patterns, raw_match",
+                               number=10)
 
 match_time = timeit.timeit('match_all_patterns(match)',
-                                   setup="from __main__ import match_all_patterns, match",
-                                   number=10)
+                           setup="from __main__ import match_all_patterns, match",
+                           number=10)
 
 print(raw_match_time, match_time)
 
-print(example(5,4,3))
+print(example(5, 4, 3))

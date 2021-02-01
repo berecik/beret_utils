@@ -1,6 +1,7 @@
-import psycopg2
 import os
 import time
+
+import psycopg2
 
 NAME = os.environ.get('POSTGRES_DB', '../python_indicators')
 USER = os.environ.get('POSTGRES_USER', 'postgres')
@@ -13,17 +14,16 @@ WAIT = os.environ.get('POSTGRES_WAIT', 5)
 for i in range(RETRIES):
     try:
         with psycopg2.connect(
-            user=USER,
-            password=PASSWORD,
-            host=HOST,
-            port=PORT,
-            database=NAME
+                user=USER,
+                password=PASSWORD,
+                host=HOST,
+                port=PORT,
+                database=NAME
         ):
             print("PostgreSQL is ready for connection now!")
             break
 
     except (Exception, psycopg2.Error) as error:
         print("Error while connecting to PostgreSQL", error)
-        print("Let wait {} seconds for postgresql connection {} time".format(WAIT, i+1))
+        print("Let wait {} seconds for postgresql connection {} time".format(WAIT, i + 1))
         time.sleep(WAIT)
-

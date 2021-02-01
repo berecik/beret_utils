@@ -1,7 +1,8 @@
 import os
 from abc import abstractmethod
+
+from .mapping import MappingConst
 from .singleton import Singleton
-from .mapping import MappingDict, MappingConst
 
 
 class Value(object):
@@ -23,7 +24,6 @@ class EnvValue(Value):
 
 
 def get_config(defaults, env_files):
-
     @Singleton
     class ConfigClass(MappingConst):
 
@@ -31,13 +31,13 @@ def get_config(defaults, env_files):
             map(
                 lambda args:
                 (lambda key, value=None, parser=str, env_key=None:
-                    (
-                        key,
-                        value,
-                        parser,
-                        key if env_key is None else env_key
-                    )
-                )(*args),
+                 (
+                     key,
+                     value,
+                     parser,
+                     key if env_key is None else env_key
+                 )
+                 )(*args),
                 defaults
             )
         )
@@ -66,7 +66,7 @@ def get_config(defaults, env_files):
                 if callable(value):
                     value = value(env)
                 self.__dict__[key] = value
-            
+
             super().__init__()
 
     return ConfigClass

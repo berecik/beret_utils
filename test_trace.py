@@ -1,5 +1,6 @@
 from beret_utils.trace import log_fun
 
+
 @log_fun
 def example(a, b, c):
     a = b + c
@@ -10,12 +11,13 @@ def example(a, b, c):
 
 
 def test_log_content_working():
-    assert example(5,4,3) == 34
+    assert example(5, 4, 3) == 34
 
 
 @log_fun
 def fun_a_10():
     return 10
+
 
 @log_fun
 def fun_b_20():

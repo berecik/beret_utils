@@ -1,5 +1,7 @@
 __author__ = 'beret'
+
 from threading import local
+
 # to fix Django >= 1.10
 try:
     from django.utils.deprecation import MiddlewareMixin
@@ -9,6 +11,7 @@ except ImportError:
 import urllib
 
 _local = local()
+
 
 class GlobalRequestMiddleware(MiddlewareMixin):
     def process_request(self, request):
@@ -45,7 +48,7 @@ def get_client_ip(request=None):
         PRIVATE_IPS_PREFIX = ('10.', '172.', '192.', '127.')
         # remove the private ips from the beginning
         while (len(proxies) > 0 and
-                proxies[0].startswith(PRIVATE_IPS_PREFIX)):
+               proxies[0].startswith(PRIVATE_IPS_PREFIX)):
             proxies.pop(0)
         # take the first ip which is not a private one (of a proxy)
         if len(proxies) > 0:

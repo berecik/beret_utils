@@ -11,6 +11,7 @@ from io import StringIO
 class NotSupportedMailFormat(Exception):
     pass
 
+
 def parse_attachment(message_part):
     """
     parse attachement file
@@ -31,14 +32,14 @@ def parse_attachment(message_part):
             attachment.read_date = None
 
             for param in dispositions[1:]:
-                name,value = param.split("=")
-                if value[0]=='"':
+                name, value = param.split("=")
+                if value[0] == '"':
                     value = value[1:]
-                if value[-1]=='"':
+                if value[-1] == '"':
                     value = value[:-1]
-                if value[0]=="'":
+                if value[0] == "'":
                     value = value[1:]
-                if value[-1]=="'":
+                if value[-1] == "'":
                     value = value[:-1]
                 name = name.lower()
                 if "filename" in name:
@@ -53,6 +54,7 @@ def parse_attachment(message_part):
 
     return None
 
+
 def parse_email_content(content):
     """
     parse email content
@@ -62,9 +64,9 @@ def parse_email_content(content):
     if msgobj['Subject'] is not None:
         decodefrag = decode_header(msgobj['Subject'])
         subj_fragments = []
-        for s , enc in decodefrag:
+        for s, enc in decodefrag:
             if enc:
-                s = s.encode('utf8','replace')
+                s = s.encode('utf8', 'replace')
             subj_fragments.append(s)
         subject = ''.join(subj_fragments)
     else:
@@ -77,7 +79,7 @@ def parse_email_content(content):
     for part in msgobj.walk():
         charset = part.get_content_charset()
         if not charset:
-            charset='utf-8'
+            charset = 'utf-8'
         attachment = parse_attachment(part)
         if attachment:
             attachments.append(attachment)
@@ -87,15 +89,15 @@ def parse_email_content(content):
             if text is None:
                 text = ""
             text += str(
-                        part.get_payload( decode = True ),
-                        charset,
-                        'replace'
-                        )
+                part.get_payload(decode=True),
+                charset,
+                'replace'
+            )
             body += str(
                 part.get_payload(decode=True),
                 charset,
                 'replace'
-            ).encode('utf8','replace')
+            ).encode('utf8', 'replace')
         elif part.get_content_type() == "text/html":
             if html is None:
                 html = ""
@@ -103,18 +105,17 @@ def parse_email_content(content):
                 part.get_payload(decode=True),
                 charset,
                 'replace'
-            ).encode('utf8','replace')
+            ).encode('utf8', 'replace')
     return {
-        'subject' : subject,
-        'body' : body,
-        'html' : html,
-        'from' : parseaddr(msgobj.get('From'))[1],
-        'to' : parseaddr(msgobj.get('To'))[1],
-        'cc' : parseaddr(msgobj.get('Cc'))[1],
-        'reply_to' : parseaddr(msgobj.get('Reply-To'))[1],
+        'subject':     subject,
+        'body':        body,
+        'html':        html,
+        'from':        parseaddr(msgobj.get('From'))[1],
+        'to':          parseaddr(msgobj.get('To'))[1],
+        'cc':          parseaddr(msgobj.get('Cc'))[1],
+        'reply_to':    parseaddr(msgobj.get('Reply-To'))[1],
         'attachments': attachments,
     }
-
 
 
 class Imap():
@@ -124,67 +125,67 @@ class Imap():
 
     help = "Parse mails from settings.IMAP_SERVER"
 
-    def __init__( self, *args, **kwargs ):
+    def __init__(self, *args, **kwargs):
         self.imap_server = kwargs.get('imap_server', None)
         self.imap_login = kwargs.get('imap_login', None)
         self.imap_passwd = kwargs.get('imap_passwd', None)
         self.parse_mail = kwargs.get('parse', self._get_parse)
-        self.feedback=False
+        self.feedback = False
 
     def open(self):
-        self.mailbox = IMAP4( self.imap_server )
-        self.mailbox.login( self.imap_login, self.imap_passwd )
+        self.mailbox = IMAP4(self.imap_server)
+        self.mailbox.login(self.imap_login, self.imap_passwd)
         self.mailbox.select()
 
     def _get_parse(self):
-        def _parse(mail=None, *args, **kwargs ):
+        def _parse(mail=None, *args, **kwargs):
             return mail
+
         return _parse
 
-    def get_list( self ):
+    def get_list(self):
         '''
         get list of message's numbers in main mailbox
         '''
-        typ, data = self.mailbox.search( None, 'UNSEEN' )
-        nr_list = data[0].split( ' ' )
-        if len( nr_list ) == 1 and nr_list[0] == '':
+        typ, data = self.mailbox.search(None, 'UNSEEN')
+        nr_list = data[0].split(' ')
+        if len(nr_list) == 1 and nr_list[0] == '':
             return []
         else:
             return nr_list
 
     def iterator(self):
         for number in self.get_list():
-            typ, data = self.mailbox.fetch( number, '(RFC822 UID BODY[TEXT])' )
-            if data and len( data ) > 1:
+            typ, data = self.mailbox.fetch(number, '(RFC822 UID BODY[TEXT])')
+            if data and len(data) > 1:
                 mail = parse_email_content(email.message_from_string(data[0][1]))
                 yield mail
-            self.set_seen( number )
+            self.set_seen(number)
         rest = self.get_list()
-        if len( rest ) > 0:
+        if len(rest) > 0:
             yield from self.iterator()
 
-    def parse( self , _parse=None):
+    def parse(self, _parse=None):
         '''
         parse all mails from imap mailbox
         '''
-        return map( self.parse_mail, self.iterator())
-
+        return map(self.parse_mail, self.iterator())
 
     def set_seen(self, number):
         '''
         Set mail as seen
         '''
-        self.mailbox.store( number, '+FLAGS', '\\Seen' )
+        self.mailbox.store(number, '+FLAGS', '\\Seen')
         self.mailbox.expunge()
 
-    def mv_mail( self, number, mbox_name ):
+    def mv_mail(self, number, mbox_name):
         '''
         move message to internal mailbox
         @param number: message number in main mailbox
         @param mbox_name: internal mailbox name
         '''
-        self.mailbox.copy( number, "INBOX.%s" % mbox_name )
-        self.mailbox.store( number, '+FLAGS', '\\Deleted' )
+        self.mailbox.copy(number, "INBOX.%s" % mbox_name)
+        self.mailbox.store(number, '+FLAGS', '\\Deleted')
         self.mailbox.expunge()
 
     def close(self):
@@ -192,5 +193,5 @@ class Imap():
             self.mailbox.close()
             self.mailbox.logout()
 
-    def __del__( self, *args, **kwargs ):
+    def __del__(self, *args, **kwargs):
         self.close()

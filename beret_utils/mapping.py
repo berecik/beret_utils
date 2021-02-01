@@ -1,5 +1,3 @@
-
-
 class MappingDict(dict):
 
     def __setitem__(self, key, item):
@@ -67,7 +65,6 @@ class MappingAttrs(MappingDict):
 
 
 class MappingConst(MappingAttrs):
-
     read_only_exception = PermissionError
 
     def __read_only(self, *args, **kwargs):

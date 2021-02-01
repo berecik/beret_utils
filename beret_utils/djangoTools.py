@@ -1,14 +1,14 @@
 # -*- coding: utf-8 -*-
 
-import pprint
 import json
 import os
+import pprint
 
 __author__ = 'beret'
 
-
 try:
     from django.conf import settings
+
     BASE_DIR = settings.BASE_DIR
     DEBUG_FILE = getattr(settings, 'DEBUG_FILE', os.path.join(BASE_DIR, '_debug_log.log'))
 except ImportError:
@@ -46,8 +46,10 @@ def _get_write(f):
 
 def get_pp(*args, **kwargs):
     __p = p(*args, **kwargs)
+
     def __pp(*datas):
         return __p(*datas)
+
     return __pp
 
 
@@ -72,6 +74,7 @@ def pp(txt, parse=None, cout=_cout, f=True, string=None):
 def p(parse=None, cout=_cout, f=True, **kwargs):
     def __pp(*txts):
         return [pp(txt=txt, parse=parse, cout=cout, f=f, **kwargs) for txt in txts]
+
     return __pp
 
 
