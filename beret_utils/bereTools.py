@@ -7,7 +7,7 @@ import urllib
 
 # fixed point Y combinator
 Y = (lambda g: (lambda f: g(lambda *arg: f(f)(*arg)))(lambda f: g(lambda *arg: f(f)(*arg))))
-# example of using Y combinator to calcul greatest common divisor by euliclean algoritm
+# example of using Y combinator to calculate greatest common divisor by euliclean algoritm
 # gcd=lambda a,b: a if not b else nwd(b,a%b)
 gcd = lambda a, b: Y(lambda f: lambda a, b: not b and a or f(b, a % b))(a, b)
 # function for division of rational numbers
@@ -70,11 +70,10 @@ def replace(beg, end, new):
             b, l = beg(txt, e)
             if b == -1:
                 break
-            count = b = b + l
+            b = b + l
             e, l = end(txt, b)
             if e == -1:
                 break
-            count = e + l
             yield "%s%s" % (txt[le:b], new(txt[b:e]))
         yield txt[le:]
 
@@ -126,7 +125,7 @@ def getchar():
         else:
             ch = os.read(fd, 7)
 
-    except:
+    except Exception as e:
         ch = input()
     return (ch)
 
