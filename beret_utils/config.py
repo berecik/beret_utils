@@ -7,7 +7,7 @@ from .singleton import Singleton
 
 class Value(object):
 
-    def __call__(self, envs):
+    def __call__(self, *envs):
         for env in envs:
             result = self.get_value(env)
             if result is not None:
