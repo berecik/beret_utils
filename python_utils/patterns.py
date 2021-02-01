@@ -9,9 +9,7 @@ def rest(l):
 def raw_match(pattern, str, star = False, at = False):
 
     if pattern is None:
-        if str is None:
-            return True
-        elif star:
+        if str is None or star:
             return True
         elif at:
             return len(str) == 1
@@ -44,7 +42,7 @@ def raw_match(pattern, str, star = False, at = False):
         else:
             return match(pattern, rest(str), star=False, at=False)
 
-    if pattern[0] == '?' or pattern[0] == str[0]:
+    if pattern[0] in ['?', str[0]]:
         return match(rest(pattern), rest(str), star, at)
 
     return False

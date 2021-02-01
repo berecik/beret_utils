@@ -160,9 +160,8 @@ class Imap():
                 yield mail
             self.set_seen( number )
         rest = self.get_list()
-        if len( rest ) > 0 :
-            for mail in self.iterator():
-                yield mail
+        if len( rest ) > 0:
+            yield from self.iterator()
 
     def parse( self , _parse=None):
         '''

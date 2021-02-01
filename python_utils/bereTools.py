@@ -79,10 +79,7 @@ def addLine( msg, line, sep = '\n' ):
     """
     just add new line to text variable
     """
-    if msg:
-        msg = "%s%s" % ( msg, sep )
-    else:
-        msg = ""
+    msg = "%s%s" % ( msg, sep ) if msg else ""
     msg = "%s%s" % ( msg, line )
     return msg
 
@@ -154,7 +151,7 @@ def tags( tag, text, lista = False ):
     tag = tag.lower()
     if not lista:
         lista = []
-    if not "<%s" % tag in text.lower():
+    if "<%s" % tag not in text.lower():
         return lista
     else:
         row_begin = text.lower().find( "<%s" % tag )

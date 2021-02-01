@@ -7,8 +7,7 @@ from xml.dom.minidom import parseString
 def getXmlData( cmd ):
     xml_diff = subprocess.getoutput( cmd )
     xml_diff = xml_diff[xml_diff.find( "<?" ):]
-    xml_data = parseString( xml_diff )
-    return xml_data
+    return parseString( xml_diff )
 
 def getCmd( src, rev_begin, rev_end ):
     if src[:7] == 'http://' :
@@ -59,15 +58,12 @@ if __name__ == '__main__':
     argv = sys.argv
     if argv[1][:7] == 'http://':
         url = argv[1]
-        argv.remove( argv[1] )
+        argv.remove(url)
     else:
         url = False
     dest = argv[1]
     rev_begin = argv[2]
-    if len( argv ) > 3:
-        rev_end = argv[3]
-    else:
-        rev_end = 'HEAD'
+    rev_end = argv[3] if len( argv ) > 3 else 'HEAD'
     if len( argv ) > 4:
         dir = argv[4]
     elif not url:
@@ -75,10 +71,7 @@ if __name__ == '__main__':
     else:
         dir = False
 
-    if url:
-        src = url
-    else:
-        src = dir
+    src = url if url else dir
     cmd = getCmd( src, rev_begin, rev_end )
 
     print(cmd)

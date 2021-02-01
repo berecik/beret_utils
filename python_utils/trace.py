@@ -28,22 +28,15 @@ def log_fun(*args, **kwargs):
 
         def print_log(frame, event):
             co = frame.f_code
-            func_name = co.co_name
             line_no = frame.f_lineno
             filename = co.co_filename
-            if show_path:
-                path = "{}:{}".format(filename, line_no)
-            else:
-                path = ""
+            path = "{}:{}".format(filename, line_no) if show_path else ""
             variables = ["%s=%s" % (key, _pp.pformat(val)) for key, val in frame.f_locals.items()]
 
-            if show_args:
-                args = "({})".format(",".join(variables))
-            else:
-                args = ""
-
+            args = "({})".format(",".join(variables)) if show_args else ""
             if event == 'call':
                 if show_call:
+                    func_name = co.co_name
                     log_fun("{}{}{}".format("%s " % path, func_name, args))
             elif show_content:
                 log_fun("\n".join(variables))
@@ -52,9 +45,8 @@ def log_fun(*args, **kwargs):
 
         def log_return(old_log=None):
             def _log_return_wrapper(frame, event, arg):
-                if frame.f_code == fun.__code__:
-                    if event in LOG_EVENTS:
-                        print_log(frame, event)
+                if frame.f_code == fun.__code__ and event in LOG_EVENTS:
+                    print_log(frame, event)
                 if callable(old_log):
                     old_log(frame, event, arg)
 
