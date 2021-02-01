@@ -1,15 +1,11 @@
 import os
 
 
-def get_path(i=0):
-    if i > 0:
-        def __wrap(file_name):
-            __get_path = get_path(i-1)
-            path = __get_path(file_name)
-            return os.path.dirname(path)
-        return __wrap
+def get_path(depth=0):
 
     BASE_DIR = os.getcwd()
+    for i in range(depth):
+        BASE_DIR = os.path.dirname(BASE_DIR)
 
     def __get_path(file_name):
         file_name = os.path.expandvars(file_name)
