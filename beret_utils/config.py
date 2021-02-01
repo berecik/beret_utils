@@ -7,8 +7,12 @@ from .singleton import Singleton
 
 class Value(object):
 
-    def __call__(self, env):
-        return self.get_value(env)
+    def __call__(self, envs):
+        for env in envs:
+            result = self.get_value(env)
+            if result is not None:
+                return result
+        return None
 
     @abstractmethod
     def get_value(self, config):
@@ -20,7 +24,7 @@ class EnvValue(Value):
         self.var_name = var_name
 
     def get_value(self, env):
-        return env[self.var_name]
+        return env.get(self.var_name)
 
 
 class ConfigBaseClass(MappingConst):
@@ -54,7 +58,7 @@ class ConfigBaseClass(MappingConst):
             if env_key in env:
                 value = parser(env[env_key])
             if callable(value):
-                value = value(env)
+                value = value(values, env)
             values[key] = value
         return values
 
