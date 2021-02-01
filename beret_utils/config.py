@@ -1,5 +1,6 @@
 import os
 from abc import abstractmethod
+from typing import Optional, Iterable, Type, AnyStr
 
 from .mapping import MappingConst
 from .singleton import Singleton
@@ -7,7 +8,7 @@ from .singleton import Singleton
 
 class Value(object):
 
-    def __call__(self, *envs):
+    def __call__(self, *envs: dict) -> Optional[AnyStr]:
         for env in envs:
             result = self.get_value(env)
             if result is not None:
@@ -15,26 +16,61 @@ class Value(object):
         return None
 
     @abstractmethod
-    def get_value(self, config):
+    def get_value(self, config: object) -> AnyStr:
         pass
 
 
 class EnvValue(Value):
-    def __init__(self, var_name):
+    def __init__(self, var_name: str):
         self.var_name = var_name
 
     def get_value(self, env):
         return env.get(self.var_name)
 
 
-class ConfigBaseClass(MappingConst):
+class Config(MappingConst):
+
+    @abstractmethod
+    def get_values(self) -> dict:
+        return {}
+
+    def __init__(self):
+        super().__init__()
+        self.__dict__ = self.get_values()
+
+
+def init_envs(envs: Optional[Iterable]) -> list:
+    return list(envs) if envs is not None else []
+
+
+class ConfigEnv(Config):
 
     DEFAULTS = []
+
+    def get_envs(self, envs: Optional[Iterable[dict]] = None) -> list:
+        envs = init_envs(envs)
+        envs.append(os.environ)
+        return envs
+
+    def get_values(self):
+        values = {}
+        envs = self.get_envs()
+        for key, value, parser, env_key in self.DEFAULTS:
+            env_val = EnvValue(env_key)(*envs)
+            if env_val is not None:
+                value = parser(env_val)
+            if callable(value):
+                value = value(values, *envs)
+            values[key] = value
+        return values
+
+
+class ConfigEnvFiles(ConfigEnv):
+
     ENV_FILES = []
 
-    def get_env(self):
-        env = {}  # dict(os.environ)
-        self.__dict__ = {}
+    def get_env_files(self) -> dict:
+        env = {}
         for env_file_path in self.ENV_FILES:
             try:
                 with open(env_file_path, 'r') as env_file:
@@ -48,29 +84,18 @@ class ConfigBaseClass(MappingConst):
                                 pass
             except FileNotFoundError:
                 pass
-        env.update(os.environ)
         return env
 
-    def get_values(self):
-        values = {}
-        env = self.get_env()
-        for key, value, parser, env_key in self.DEFAULTS:
-            if env_key in env:
-                value = parser(env[env_key])
-            if callable(value):
-                value = value(values, env)
-            values[key] = value
-        return values
-
-    def __init__(self):
-        super().__init__()
-        self.__dict__ = self.get_values()
+    def get_envs(self, envs: Optional[Iterable[dict]] = None) -> list:
+        envs = super().get_envs(envs)
+        envs.append(self.get_env_files())
+        return envs
 
 
-def get_config(defaults, env_files):
+def get_config(defaults, env_files) -> Type[Config]:
 
     @Singleton
-    class ConfigClass(ConfigBaseClass):
+    class ConfigClass(ConfigEnvFiles):
         DEFAULTS = tuple(
             map(
                 lambda args:
