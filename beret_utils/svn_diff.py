@@ -4,10 +4,12 @@ import os
 import subprocess
 from xml.dom.minidom import parseString
 
+
 def getXmlData( cmd ):
     xml_diff = subprocess.getoutput( cmd )
     xml_diff = xml_diff[xml_diff.find( "<?" ):]
     return parseString( xml_diff )
+
 
 def getCmd( src, rev_begin, rev_end ):
     if src[:7] == 'http://' :
@@ -20,6 +22,7 @@ def getCmd( src, rev_begin, rev_end ):
         cmd = "svn diff --summarize --xml -r %(rbegin)s:%(rend)s %(dir)s" % {'dir':dir, 'rbegin': str( rev_begin ), 'rend': str( rev_end )}
     return cmd
 
+
 def getFiles( xml_data ):
     files = []
     nodes = xml_data.getElementsByTagName( "path" )
@@ -27,6 +30,7 @@ def getFiles( xml_data ):
         if node.attributes['item'].value != "deleted":
             files.append( node.childNodes[0].data )
     return files
+
 
 def crateDestByDir( dir, dest, files ):
     dest = os.path.abspath( dest )
@@ -39,6 +43,7 @@ def crateDestByDir( dir, dest, files ):
             os.makedirs( desc_dir )
         cmd = "cp -vf %s %s" % ( src_file, desc_file )
         print(subprocess.getoutput( cmd ))
+
 
 def crateDestByUrl( url, dest, rev_end, urls ):
     dest = os.path.abspath( dest )
@@ -53,6 +58,7 @@ def crateDestByUrl( url, dest, rev_end, urls ):
         if out:
             print(out)
         print("%s -> %s" % ( src_url, desc_file ))
+
 
 if __name__ == '__main__':
     argv = sys.argv

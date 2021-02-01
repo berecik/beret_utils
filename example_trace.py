@@ -1,5 +1,5 @@
-from python_utils.trace import log_fun
-from python_utils.patterns import match, raw_match
+from beret_utils.trace import log_fun
+from beret_utils.patterns import match, raw_match
 
 import timeit
 

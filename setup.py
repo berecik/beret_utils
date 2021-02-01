@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Note: To use the 'upload' functionality of this file, you must:
-#   $ pip install twine
+#   $ pip install python_utis
 
 import io
 import os
@@ -12,7 +12,7 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'python_utils'
+NAME = 'beret_utils'
 DESCRIPTION = 'Subjective Python tools selection.'
 URL = 'https://github.com/berecik/python_utils'
 EMAIL = 'beret@hipisi.org.pl'

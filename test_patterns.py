@@ -1,4 +1,4 @@
-from python_utils.patterns import match
+from beret_utils.patterns import match
 
 
 def test_patterns_match_01():
