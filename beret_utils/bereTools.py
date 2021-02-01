@@ -125,9 +125,9 @@ def getchar():
         else:
             ch = os.read(fd, 7)
 
-    except Exception as e:
+    except IOError:
         ch = input()
-    return (ch)
+    return ch
 
 
 def url2txt(url, coding=False):
@@ -144,7 +144,7 @@ def url2txt(url, coding=False):
             return response.read().decode(coding)
         else:
             return response.read()
-    except:
+    except Exception:
         return False
 
 

@@ -33,7 +33,7 @@ def try_int(data, default=None):
         if isinstance(data, (list, tuple)):
             return try_int(data[0], default)
         return int(data)
-    except:
+    except Exception:
         return default
 
 
