@@ -23,7 +23,6 @@ class EnvValue(Value):
         return env[self.var_name]
 
 
-@Singleton
 class ConfigBaseClass(MappingConst):
 
     DEFAULTS = []
@@ -66,6 +65,7 @@ class ConfigBaseClass(MappingConst):
 
 def get_config(defaults, env_files):
 
+    @Singleton
     class ConfigClass(ConfigBaseClass):
         DEFAULTS = tuple(
             map(
