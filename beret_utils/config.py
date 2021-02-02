@@ -1,6 +1,6 @@
 import os
 from abc import abstractmethod
-from typing import Optional, Iterable, Type, AnyStr, ClassType
+from typing import Optional, Iterable, Type, AnyStr
 
 from .mapping import MappingConst
 from .singleton import Singleton
@@ -95,8 +95,8 @@ class ConfigEnvFiles(ConfigEnv):
 def get_config_class(
         defaults: Iterable[Type[tuple]],
         env_files: Iterable[AnyStr],
-        config_class: Optional[ClassType[Config]] = ConfigEnvFiles
-) -> ClassType[Config]:
+        config_class: Optional[Type[Config]] = ConfigEnvFiles
+) -> Type[Config]:
 
     class ConfigClass(config_class):
         DEFAULTS = tuple(
@@ -121,8 +121,8 @@ def get_config_class(
 def get_config(
         defaults: Iterable[Type[tuple]],
         env_files: Iterable[AnyStr],
-        config_class: Optional[ClassType[Config]] = None
-) -> ClassType[Singleton, Config]:
+        config_class: Optional[Type[Config]] = None
+) -> Type[Singleton, Config]:
 
     args = [defaults, env_files]
     if config_class is not None:
