@@ -63,8 +63,15 @@ class MappingAttrs(MappingDict):
     def __delattr__(self, item):
         self.__delitem__(item)
 
+class MappingDictDefault(MappingDict):
 
-class MappingConst(MappingDict):
+    DEFAULT_VALUE = None
+
+    def __getitem__(self, key):
+        return self.__dict__[key] if key in self.__dict__ else self.DEFAULT_VALUE
+
+
+class MappingConst(MappingDictDefault):
     read_only_exception = PermissionError
 
     def __read_only(self, *args, **kwargs):
