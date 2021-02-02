@@ -58,7 +58,7 @@ class ConfigEnv(Config):
             env_val = EnvValue(env_key)(*envs)
             if env_val is not None:
                 value = parser(env_val)
-            elif parse_default:
+            elif parse_default and not callable(value):
                 value = parser(value)
             if callable(value):
                 value = value(values, *envs)
