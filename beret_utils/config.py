@@ -92,7 +92,7 @@ class ConfigEnvFiles(ConfigEnv):
         return envs
 
 
-def get_config(defaults, env_files) -> Type[Config]:
+def get_config_class(defaults: Iterable[Type[tuple]], env_files: Iterable[AnyStr]) -> Type[Config]:
 
     @Singleton
     class ConfigClass(ConfigEnvFiles):
@@ -113,3 +113,7 @@ def get_config(defaults, env_files) -> Type[Config]:
         ENV_FILES = env_files
 
     return ConfigClass
+
+
+def get_config(defaults: Iterable[Type[tuple]], env_files: Iterable[AnyStr]) -> Type[Singleton, Config]:
+    return Singleton(get_config_class(defaults, env_files))
