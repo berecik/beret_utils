@@ -1,6 +1,6 @@
 import os
 from abc import abstractmethod
-from typing import Optional, Iterable, Type, AnyStr
+from typing import Optional, Iterable, Type, AnyStr, ClassType
 
 from .mapping import MappingConst
 from .singleton import Singleton
@@ -44,7 +44,6 @@ def init_envs(envs: Optional[Iterable]) -> list:
 
 
 class ConfigEnv(Config):
-
     DEFAULTS = []
 
     def get_envs(self, envs: Optional[Iterable[dict]] = None) -> list:
@@ -66,7 +65,6 @@ class ConfigEnv(Config):
 
 
 class ConfigEnvFiles(ConfigEnv):
-
     ENV_FILES = []
 
     def get_env_files(self) -> dict:
@@ -76,10 +74,12 @@ class ConfigEnvFiles(ConfigEnv):
                 with open(env_file_path, 'r') as env_file:
                     for line in env_file.readlines():
                         line = line.strip()
-                        if '=' in line and line[0] != '#':
+                        if '#' in line:
+                            line = line.split('#')[0].strip()
+                        if '=' in line:
                             try:
                                 key, value = line.split('=')
-                                env[key] = value
+                                env[key.strip()] = value.strip()
                             except ValueError:
                                 pass
             except FileNotFoundError:
@@ -92,10 +92,13 @@ class ConfigEnvFiles(ConfigEnv):
         return envs
 
 
-def get_config_class(defaults: Iterable[Type[tuple]], env_files: Iterable[AnyStr]) -> Type[Config]:
+def get_config_class(
+        defaults: Iterable[Type[tuple]],
+        env_files: Iterable[AnyStr],
+        config_class: Optional[ClassType[Config]] = ConfigEnvFiles
+) -> ClassType[Config]:
 
-    @Singleton
-    class ConfigClass(ConfigEnvFiles):
+    class ConfigClass(config_class):
         DEFAULTS = tuple(
             map(
                 lambda args:
@@ -115,5 +118,13 @@ def get_config_class(defaults: Iterable[Type[tuple]], env_files: Iterable[AnyStr
     return ConfigClass
 
 
-def get_config(defaults: Iterable[Type[tuple]], env_files: Iterable[AnyStr]) -> Type[Singleton, Config]:
-    return Singleton(get_config_class(defaults, env_files))
+def get_config(
+        defaults: Iterable[Type[tuple]],
+        env_files: Iterable[AnyStr],
+        config_class: Optional[ClassType[Config]] = None
+) -> ClassType[Singleton, Config]:
+
+    args = [defaults, env_files]
+    if config_class is not None:
+        args.append(config_class)
+    return Singleton(get_config_class(*args))
