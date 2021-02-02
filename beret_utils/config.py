@@ -54,10 +54,12 @@ class ConfigEnv(Config):
     def get_values(self):
         values = {}
         envs = self.get_envs()
-        for key, value, parser, env_key in self.DEFAULTS:
+        for key, value, parser, env_key, parse_default in self.DEFAULTS:
             env_val = EnvValue(env_key)(*envs)
             if env_val is not None:
                 value = parser(env_val)
+            elif parse_default:
+                value = parser(value)
             if callable(value):
                 value = value(values, *envs)
             values[key] = value
@@ -102,12 +104,13 @@ def get_config_class(
         DEFAULTS = tuple(
             map(
                 lambda args:
-                (lambda key, value=None, parser=str, env_key=None:
+                (lambda key, value=None, parser=str, env_key=None, parse_default=True:
                  (
                      key,
                      value,
                      parser,
-                     key if env_key is None else env_key
+                     key if env_key is None else env_key,
+                     parse_default
                  )
                  )(*args),
                 defaults
@@ -122,7 +125,7 @@ def get_config(
         defaults: Iterable[Type[tuple]],
         env_files: Iterable[AnyStr],
         config_class: Optional[Type[Config]] = None
-) -> Type[Singleton, Config]:
+) -> Singleton:
 
     args = [defaults, env_files]
     if config_class is not None:
