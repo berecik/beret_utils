@@ -1,9 +1,9 @@
 import os
+
 from abc import abstractmethod
 from typing import Optional, Iterable, Type, AnyStr
 
 from .mapping import MappingConst
-from .singleton import Singleton
 
 
 class Value(object):
@@ -26,6 +26,55 @@ class EnvValue(Value):
 
     def get_value(self, env):
         return env.get(self.var_name)
+
+
+def join_path(*args):
+    return os.path.join(*args)
+
+
+def join_path_value(dir_id):
+    """
+    produce a special parser with join another variable value to given path
+    """
+    class JoinPathValue(EnvValue):
+        def get_value(self, env):
+            if dir_id in env:
+                value = join_path(env[dir_id], self.var_name)
+                return value
+    return JoinPathValue
+
+
+def bool_value(value):
+    try:
+        i = float(value)
+        return bool(i)
+    except ValueError:
+        pass
+
+    s = str(value).lower()
+    if "true" in s:
+        return True
+    if "false" in s:
+        return False
+    return None
+
+
+def expand_defaults(init):
+    return (
+        map(
+            lambda args:
+            (lambda key, value=None, parser=str, env_key=None, parse_default=True:
+             (
+                 key,
+                 value,
+                 parser,
+                 key if env_key is None else env_key,
+                 parse_default
+             )
+             )(*args),
+            init
+        )
+    )
 
 
 class Config(MappingConst):
@@ -51,10 +100,14 @@ class ConfigEnv(Config):
         envs.append(os.environ)
         return envs
 
-    def get_values(self):
+    def get_values(self, init=None):
+        if init is not None:
+            defaults = expand_defaults(init)
+        else:
+            defaults = self.DEFAULTS
         values = {}
         envs = self.get_envs()
-        for key, value, parser, env_key, parse_default in self.DEFAULTS:
+        for key, value, parser, env_key, parse_default in defaults:
             env_val = EnvValue(env_key)(*envs)
             if env_val is not None:
                 value = parser(env_val)
@@ -64,6 +117,9 @@ class ConfigEnv(Config):
                 value = value(values, *envs)
             values[key] = value
         return values
+
+    def update(self, init):
+        return super().update(self.get_values(init))
 
 
 class ConfigEnvFiles(ConfigEnv):
@@ -94,40 +150,14 @@ class ConfigEnvFiles(ConfigEnv):
         return envs
 
 
-def get_config_class(
+def get_config(
         defaults: Iterable[tuple],
         env_files: Iterable[AnyStr],
-        config_class: Optional[Config] = ConfigEnvFiles
-) -> Config:
+        config_class: Optional[Type[Config]] = ConfigEnvFiles
+) -> Type[Config]:
 
     class ConfigClass(config_class):
-        DEFAULTS = tuple(
-            map(
-                lambda args:
-                (lambda key, value=None, parser=str, env_key=None, parse_default=True:
-                 (
-                     key,
-                     value,
-                     parser,
-                     key if env_key is None else env_key,
-                     parse_default
-                 )
-                 )(*args),
-                defaults
-            )
-        )
+        DEFAULTS = expand_defaults(defaults)
         ENV_FILES = env_files
 
     return ConfigClass
-
-
-def get_config(
-        defaults: Iterable[Type[tuple]],
-        env_files: Iterable[AnyStr],
-        config_class: Optional[Config] = None
-) -> Singleton:
-
-    args = [defaults, env_files]
-    if config_class is not None:
-        args.append(config_class)
-    return Singleton(get_config_class(*args))

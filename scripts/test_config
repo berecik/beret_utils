@@ -1,4 +1,0 @@
-#!/bin/bash
-
-source .local.env
-python -m config_example.py

@@ -20,7 +20,7 @@ URL = 'https://github.com/berecik/python_utils'
 EMAIL = 'beret@hipisi.org.pl'
 AUTHOR = 'Adam Beret Manczuk'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = "0.1.4"
+VERSION = "0.1.5"
 
 REQUIRED = []
 
@@ -49,9 +49,11 @@ class UploadCommand(Command):
         print('\033[1m{0}\033[0m'.format(s))
 
     def initialize_options(self):
+        """No option to initialize yet."""
         pass
 
     def finalize_options(self):
+        """No option to finalize yet."""
         pass
 
     def run(self):
@@ -88,6 +90,7 @@ setup(
     # If your package is a single module, use this instead of 'packages':
     # py_modules=['mypackage'],
 
+    # Uncomment this code to define entry points:
     # entry_points={
     #     'console_scripts': ['mycli=mymodule:cli'],
     # },

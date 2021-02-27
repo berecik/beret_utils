@@ -1,7 +1,10 @@
 import os
 import time
 
-import psycopg2
+try:
+    import psycopg2
+except ImportError:
+    raise ImportError("No psycopg2 module")
 
 NAME = os.environ.get('POSTGRES_DB', 'test_db')
 USER = os.environ.get('POSTGRES_USER', 'postgres')
