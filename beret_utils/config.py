@@ -152,12 +152,12 @@ class ConfigEnvFiles(ConfigEnv):
 
 def get_config(
         defaults: Iterable[tuple],
-        env_files: Iterable[AnyStr],
+        env_files: Optional[Iterable[AnyStr]] = None,
         config_class: Optional[Type[Config]] = ConfigEnvFiles
 ) -> Type[Config]:
 
     class ConfigClass(config_class):
         DEFAULTS = expand_defaults(defaults)
-        ENV_FILES = env_files
+        ENV_FILES = env_files or []
 
     return ConfigClass
