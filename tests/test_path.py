@@ -24,13 +24,13 @@ class TestPath(TestCase):
 
 class TestAllFiles(TestCase):
     def setUp(self):
-        self.get_path = get_path_fun()
+        self.get_path = get_path_fun(1)
 
     def test_all_files(self):
-        test_dir = self.get_path('test_dir')
+        test_dir = self.get_path('tests')
         files = [file for file in all_files(test_dir, patterns='*.txt')]
-        file_one = self.get_path('test_dir', 'subdir', 'test.txt')
-        file_two = self.get_path('test_dir', 'subdir', 'subdir', 'test.txt')
+        file_one = self.get_path('tests', 'subdir', 'test.txt')
+        file_two = self.get_path('tests', 'subdir', 'subdir', 'test.txt')
         self.assertEqual(2, len(files))
         self.assertIn(file_one, files)
         self.assertIn(file_two, files)

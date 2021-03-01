@@ -20,7 +20,7 @@ URL = 'https://github.com/berecik/python_utils'
 EMAIL = 'beret@hipisi.org.pl'
 AUTHOR = 'Adam Beret Manczuk'
 REQUIRES_PYTHON = '>=3.6.0'
-VERSION = "0.1.6"
+VERSION = "0.1.7"
 
 REQUIRED = []
 

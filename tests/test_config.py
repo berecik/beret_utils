@@ -1,9 +1,8 @@
-import os
 from unittest import TestCase
 from beret_utils import get_config, EnvValue, join_path_value
 from beret_utils import get_path_fun
 
-get_path = get_path_fun()
+get_path = get_path_fun(1)
 
 DEFAULT_CONFIG = (
     ('ONE', 1, int),
@@ -17,8 +16,8 @@ DEFAULT_CONFIG = (
 )
 
 ENV_FILES = (
-    os.path.join('test_dir', 'test.env'),
-    os.path.join('test_dir', 'test_bis.env'),
+    'test.env',
+    'test_bis.env',
 )
 
 
