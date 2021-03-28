@@ -5,7 +5,7 @@ from dataclasses import dataclass
 
 
 @dataclass
-class Codes(object):
+class Codes:
 
     DEFAULT_CHARS = '23456789abcdefghijkmnrstuvwxyz'
     chars: Sequence = DEFAULT_CHARS
