@@ -27,26 +27,14 @@ class Codes:
         return "".join([choice(self.chars) for _ in range(length)])
 
     def code_len(self, count):
-        count = max(count, self.chars_len + 1)
-        return int(math.log(count, self.chars_len)) + 1
+        length = math.log(count, self.chars_len)
+        return int(length) + 1
 
 
 def get_code(*args, **kwargs):
     if "chars" in kwargs:
         chars = kwargs.pop("chars")
     else:
-        chars = Codes.DEFAULT_CHARS.upper()
+        chars = Codes.DEFAULT_CHARS
     codes_generator = Codes(chars=chars)
     return codes_generator(*args, **kwargs)
-
-
-if __name__ == '__main__':
-    codes = set()
-    for i in range(len(Codes.DEFAULT_CHARS)):
-        while True:
-            code = get_code(length=1)
-            if code not in codes:
-                codes.add(code)
-                break
-    for code in codes:
-        print(code)

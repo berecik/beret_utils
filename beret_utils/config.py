@@ -6,7 +6,7 @@ from typing import Optional, Iterable, Type, AnyStr
 from .mapping import MappingConst
 
 
-class Value(object):
+class Value:
 
     def __call__(self, *envs: dict) -> Optional[AnyStr]:
         for env in envs:
@@ -109,12 +109,18 @@ class ConfigEnv(Config):
         envs = self.get_envs()
         for key, value, parser, env_key, parse_default in defaults:
             env_val = EnvValue(env_key)(*envs)
+
             if env_val is not None:
                 value = parser(env_val)
             elif parse_default and not callable(value):
                 value = parser(value)
-            if callable(value):
+
+            while callable(value):
                 value = value(values, *envs)
+                if parser:
+                    value = parser(value)
+                    parser = False
+
             values[key] = value
         return values
 
