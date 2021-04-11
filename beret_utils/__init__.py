@@ -5,7 +5,8 @@ import pprint
 from .bereTools import *
 from .config import get_config, EnvValue, join_path_value, join_path
 from .imap import Imap
-from .path import get_path_fun
+from .dir import get_dir
+from .dir import get_dir as get_path_fun  # Obsolete!
 from .patterns import match
 from .singleton import Singleton
 from .tail_recursion import tail_call_optimized

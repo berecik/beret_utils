@@ -1,8 +1,8 @@
 from unittest import TestCase
 from beret_utils import get_config, EnvValue, join_path_value
-from beret_utils import get_path_fun
+from beret_utils import get_dir
 
-get_path = get_path_fun(1)
+get_path = get_dir(1)
 
 
 class ConfigTestCase(TestCase):
