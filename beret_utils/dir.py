@@ -142,8 +142,8 @@ class Dir:
         return str(self.pwd)
 
 
-def get_dir(depth=0):
-    _dir = os.getcwd()
+def get_dir(file=None, depth=0):
+    _dir = os.getcwd() if file is None else os.path.dirname(file)
     while depth:
         _dir = os.path.dirname(_dir)
         depth -= 1

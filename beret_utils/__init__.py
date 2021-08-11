@@ -6,7 +6,6 @@ from .bereTools import *
 from .config import get_config, EnvValue, join_path_value, join_path
 from .imap import Imap
 from .dir import get_dir
-from .dir import get_dir as get_path_fun  # Obsolete!
 from .patterns import match
 from .singleton import Singleton
 from .tail_recursion import tail_call_optimized
@@ -15,6 +14,10 @@ from .trace import log_fun
 
 SEND_TO_COUT = True
 _pp = pprint.PrettyPrinter(indent=2)
+
+
+def get_path_fun(depth=0):
+    return get_dir(depth=depth)
 
 
 def try_int(data, default=None):

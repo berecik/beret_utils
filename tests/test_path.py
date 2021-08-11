@@ -6,8 +6,8 @@ from beret_utils.dir import all_files
 
 class TestPath(TestCase):
     def setUp(self):
-        self.dir = get_dir()
-        self.parent_dir = get_dir(1)
+        self.dir = get_dir(__file__)
+        self.parent_dir = get_dir(__file__, depth=1)
 
     def test_path(self):
         file = __file__
@@ -40,7 +40,7 @@ class TestPath(TestCase):
 
 class TestAllFiles(TestCase):
     def setUp(self):
-        self.get_path = get_dir(1)
+        self.get_path = get_dir(__file__, depth=1)
 
     def test_all_files(self):
         test_dir = self.get_path('tests')
