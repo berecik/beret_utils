@@ -3,8 +3,8 @@ import os
 from dataclasses import dataclass
 from functools import cached_property
 from typing import Iterable
-from typing import Union
 from typing import TypeVar
+from typing import Union
 
 
 def all_files(root: str, patterns: str = "*", single_level: bool = False, yield_folders: bool = False) -> Iterable[str]:

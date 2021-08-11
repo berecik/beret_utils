@@ -1,7 +1,8 @@
 import math
-from random import choice
-from typing import Sequence, Optional
 from dataclasses import dataclass
+from random import choice
+from typing import Optional
+from typing import Sequence
 
 
 @dataclass
