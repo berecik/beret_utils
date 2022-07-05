@@ -26,7 +26,7 @@ class Dir:
         :param paths: one file path or list of file path's elements
         Return absolute path of give file in context of base dir.
         """
-        if len(paths) == 1:
+        if len(paths) == 1 and paths[0] and len(paths[0]):
             if isinstance(paths[0], str):
                 "if is one argument, and it is a string, get it as file_name"
                 file_name = paths[0]
