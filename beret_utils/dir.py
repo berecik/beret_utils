@@ -5,6 +5,7 @@ from functools import cached_property
 from typing import Iterable
 from typing import TypeVar
 from typing import Union
+from pathlib import Path
 
 
 def all_files(root: str, patterns: str = "*", single_level: bool = False, yield_folders: bool = False) -> Iterable[str]:
@@ -150,3 +151,8 @@ def get_dir(file=None, depth=0):
     BASE_DIR = _dir
 
     return Dir(BASE_DIR)
+
+
+def get_home():
+    HOME_DIR = str(Path.home())
+    return Dir(HOME_DIR)
