@@ -18,7 +18,7 @@ DIR_CLASS = TypeVar('DIR_CLASS', bound='Dir')
 
 
 @dataclass
-class Dir:
+class Dir(os.PathLike):
     __base_dir: str
 
     def __call__(self, *paths: Union[str, Iterable[str]]) -> str:
@@ -39,6 +39,10 @@ class Dir:
         file_name = self.join(*paths)
         file_name = os.path.expandvars(file_name)
         return os.path.abspath(file_name)
+
+    def __fspath__(self):
+        """for PathLike interface"""
+        return self.pwd
 
     @cached_property
     def pwd(self):
