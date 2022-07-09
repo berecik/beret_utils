@@ -4,7 +4,9 @@ import mimetypes
 import os
 import pathlib
 from dataclasses import dataclass, replace
+from dataclasses import field
 from functools import cached_property
+from typing import Callable
 from typing import Iterable
 from typing import Optional
 from typing import TypeVar
@@ -12,32 +14,57 @@ from typing import Union
 
 
 PATH_DATA_CLASS = TypeVar('PATH_DATA_CLASS', bound='PathData')
+DEFAULT_FILTERS = [
+    lambda obj: not obj.is_hidden
+]
 
 
-@dataclass
+@dataclass(order=True)
 class PathData(os.PathLike):
     """
     Object representing all data related with data.
     """
 
-    file_path: Union[str, os.PathLike] = None
-    file_name: Optional[str] = None
-    ls_patterns: Union[str, Iterable[str]] = "*"
-    ls_dirs: bool = True
-    ls_dirs_only: bool = False
-    ls_recursive: bool = False
-    depth: int = 0
+    file_path: Union[str, os.PathLike] = field(compare=True)
+    file_name: Optional[str] = field(compare=False, default=None)
+    patterns: Union[str, Iterable[str]] = field(compare=False, default="*")
+    dirs: bool = field(compare=False, default=True)
+    dirs_only: bool = field(compare=False, default=False)
+    recursive: bool = field(compare=False, default=False)
+    depth: int = field(compare=False, default=0)
+    filters: Union[str, bool, Iterable[Union[Callable[[PATH_DATA_CLASS], bool], str]]] = field(
+        compare=False,
+        default=False
+    )
 
     def __post_init__(self):
 
-        if self.file_path is str:
+        if isinstance(self.file_path, str):
             self.file_path = os.path.expandvars(self.file_path)
 
         while self.depth:
             self.file_path = os.path.dirname(self.file_path)
             self.depth -= 1
 
-        self.file_path = pathlib.Path(self.abspath)
+        # is only one object for each system file.
+        self.file_path = self.abspath
+
+        def __parse_filter(filter_data):
+            if isinstance(filter_data, str):
+                if filter_data[0] == '!':
+                    default = False
+                    filter_data = filter_data[1:]
+                else:
+                    default = True
+                return lambda obj: default if getattr(obj, filter_data) else not default
+            return filter_data
+        if isinstance(self.filters, str):
+            self.filters = [self.filters]
+
+        elif isinstance(self.filters, bool):
+            self.filters = DEFAULT_FILTERS if self.filters else ()
+
+        self.filters = list(map(__parse_filter, self.filters))
 
     @classmethod
     def home(cls, *args, **kwargs):
@@ -54,9 +81,9 @@ class PathData(os.PathLike):
         file_path = os.getcwd()
         return cls(file_path, *args, **kwargs)
 
-    def dir(self, *args, **kwargs):
+    def dir(self, **options):
         file_path = os.path.dirname(self)
-        return __class__(file_path, *args, **kwargs)
+        return replace(self, file_path=file_path, **options)
 
     def __call__(self, *paths: Union[str, Iterable[str]], **options: dict) -> PATH_DATA_CLASS:
         """
@@ -106,6 +133,10 @@ class PathData(os.PathLike):
         return self.path.is_dir()
 
     @cached_property
+    def is_hidden(self) -> bool:
+        return self.name[0] == '.'
+
+    @cached_property
     def created_at(self) -> Optional[datetime.datetime]:
         try:
             system_time = self.path.stat().st_ctime
@@ -134,10 +165,6 @@ class PathData(os.PathLike):
         return mimetypes.guess_type(self.path)[0]
 
     @cached_property
-    def is_hidden(self) -> bool:
-        return False
-
-    @cached_property
     def pwd(self):
         """
         Return absolute path of base directory
@@ -146,6 +173,10 @@ class PathData(os.PathLike):
 
     def join(self, *paths) -> str:
         return os.path.join(self.abspath, *paths)
+
+    @cached_property
+    def check(self):
+        return all(map(lambda filter: filter(self), self.filters))
 
     def iterator(self, patterns: Union[str, Iterable[str]] = None, **options) -> Iterable[PATH_DATA_CLASS]:
         """
@@ -159,7 +190,7 @@ class PathData(os.PathLike):
 
         assert self.is_dir
 
-        patterns = patterns or self.ls_patterns
+        patterns = patterns or self.patterns
 
         if isinstance(patterns, str):
             patterns = patterns.split(';')
@@ -168,7 +199,9 @@ class PathData(os.PathLike):
             name = path.name
             for pattern in patterns:
                 if fnmatch.fnmatch(name, pattern):
-                    yield __class__(path)
+                    obj = replace(self, file_path=path)
+                    if obj.check:
+                        yield obj
                     break
 
     def all(
@@ -188,9 +221,9 @@ class PathData(os.PathLike):
 
         assert self.is_dir
 
-        dirs = self.ls_dirs if dirs is None else dirs
-        dirs_only = self.ls_dirs_only if dirs_only is None else dirs_only
-        recursive = self.ls_recursive if recursive is None else recursive
+        dirs = self.dirs if dirs is None else dirs
+        dirs_only = self.dirs_only if dirs_only is None else dirs_only
+        recursive = self.recursive if recursive is None else recursive
 
         dirs_list: list[PATH_DATA_CLASS] = [self]
 
@@ -200,7 +233,7 @@ class PathData(os.PathLike):
             for path in dir.path.iterdir():
                 if path.is_dir():
                     if recursive:
-                        dirs_list.append(__class__(path))
+                        dirs_list.append(replace(dir, file_path=path))
                     if not dirs:
                         continue
                 else:

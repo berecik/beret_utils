@@ -27,9 +27,9 @@ class Dir(PathData):
     As a iterator returns absolute paths of contained files.
     """
 
-    ls_dirs: bool = False
-    ls_dirs_only: bool = False
-    ls_recursive: bool = True
+    dirs: bool = False
+    dirs_only: bool = False
+    recursive: bool = True
 
     def __call__(self, *args, **kwargs) -> str:
         return str(self.get_dir(*args, **kwargs))
