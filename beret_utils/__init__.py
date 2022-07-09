@@ -11,6 +11,7 @@ from .singleton import Singleton
 from .tail_recursion import tail_call_optimized
 from .trace import info
 from .trace import log_fun
+from .path_data import PathData
 
 SEND_TO_COUT = True
 _pp = pprint.PrettyPrinter(indent=2)

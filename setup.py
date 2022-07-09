@@ -19,8 +19,8 @@ DESCRIPTION = 'Subjective Python tools selection.'
 URL = 'https://github.com/berecik/python_utils'
 EMAIL = 'beret@hipisi.org.pl'
 AUTHOR = 'Adam Beret Manczuk'
-REQUIRES_PYTHON = '>=3.6.0'
-VERSION = "0.3.4"
+REQUIRES_PYTHON = '>=3.9.0'
+VERSION = "0.4.0"
 
 REQUIRED = []
 
