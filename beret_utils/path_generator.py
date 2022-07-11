@@ -35,7 +35,10 @@ class PathGenerator(PathData):
         return str(self.get_dir(*args, **kwargs))
 
     def ls(self, patterns: Union[str, Iterable[str]] = None, **options) -> Iterable[str]:
-        return [str(obj) for obj in super().iterator(patterns, **options)]
+        iterator = super().iterator(patterns, **options)
+        if not iterator:
+            return iterator
+        return [str(obj) for obj in iterator]
 
     def get_dir(self, *args, **kwargs) -> DIR_CLASS:
         return super().__call__(*args, **kwargs)
