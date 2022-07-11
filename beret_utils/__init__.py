@@ -5,13 +5,13 @@ import pprint
 from .bereTools import *
 from .config import get_config, EnvValue, join_path_value, join_path
 from .imap import Imap
-from .dir import get_dir, get_home
 from .patterns import match
 from .singleton import Singleton
 from .tail_recursion import tail_call_optimized
 from .trace import info
 from .trace import log_fun
 from .path_data import PathData
+from .path_generator import get_dir, all_files, get_home
 
 SEND_TO_COUT = True
 _pp = pprint.PrettyPrinter(indent=2)

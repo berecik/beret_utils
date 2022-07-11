@@ -49,6 +49,9 @@ class PathData(os.PathLike):
         # is only one object for each system file.
         self.file_path = self.abspath
 
+        self.parse_filters()
+
+    def parse_filters(self):
         def __parse_filter(filter_data):
             if isinstance(filter_data, str):
                 if filter_data[0] == '!':
@@ -111,17 +114,25 @@ class PathData(os.PathLike):
         return self.abspath
 
     def __hash__(self) -> int:
+        """For order"""
         return hash(self.__fspath__())
 
     def __str__(self):
         return self.abspath
 
+    def __iter__(self) -> Iterable[PATH_DATA_CLASS]:
+        return self.iterator()
+
     @cached_property
     def path(self) -> pathlib.Path:
+        """Always return path object"""
         return pathlib.Path(self.file_path)
 
     @cached_property
     def abspath(self) -> str:
+        """
+        Return absolute path of base directory
+        """
         return os.path.abspath(self.file_path)
 
     @cached_property
@@ -154,22 +165,12 @@ class PathData(os.PathLike):
 
     @cached_property
     def size(self) -> int:
-        try:
-            file_size = os.path.getsize(self)
-        except:
-            file_size = 0
+        file_size = os.path.getsize(self)
         return file_size
 
     @cached_property
     def mime_type(self):
         return mimetypes.guess_type(self.path)[0]
-
-    @cached_property
-    def pwd(self):
-        """
-        Return absolute path of base directory
-        """
-        return self.abspath
 
     def join(self, *paths) -> str:
         return os.path.join(self.abspath, *paths)
@@ -240,9 +241,6 @@ class PathData(os.PathLike):
                     if dirs_only:
                         continue
                 yield path
-
-    def __iter__(self) -> Iterable[PATH_DATA_CLASS]:
-        return self.iterator()
 
     def ls(self, patterns: Union[str, Iterable[str]] = None, **options) -> Optional[list[PATH_DATA_CLASS]]:
         return list(self.iterator(patterns, **options)) if self.is_dir else None

@@ -8,7 +8,7 @@ from .path_data import PathData
 
 def all_files(root: str, patterns: str = "*", single_level: bool = False, yield_folders: bool = False) -> Iterable[str]:
     """return all files in given directory"""
-    root_dir = Dir(root)
+    root_dir = PathGenerator(root)
     return root_dir.ls(
             patterns=patterns,
             recursive=not single_level,
@@ -20,11 +20,11 @@ DIR_CLASS = TypeVar('DIR_CLASS', bound='Dir')
 
 
 @dataclass
-class Dir(PathData):
+class PathGenerator(PathData):
     """
     Special version of PathData, for configuration tasks.
-    As a function return unique absolute paths of file.
-    As a iterator returns absolute paths of contained files.
+    As a function return a string value of unique absolute paths of file.
+    As a iterator returns a string value of absolute paths of contained files.
     """
 
     dirs: bool = False
@@ -43,10 +43,10 @@ class Dir(PathData):
 
 def get_dir(file=None, *args, **kwargs):
     if file is None:
-        return Dir.main(*args, **kwargs)
+        return PathGenerator.main(*args, **kwargs)
     else:
-        return Dir(file, *args, **kwargs)
+        return PathGenerator(file, *args, **kwargs)
 
 
 def get_home():
-    return Dir.home()
+    return PathGenerator.home()

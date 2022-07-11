@@ -1,7 +1,8 @@
 import os
 from unittest import TestCase
-from beret_utils.dir import get_dir
-from beret_utils.dir import all_files
+
+from beret_utils import all_files
+from beret_utils import get_dir
 
 
 class TestDir(TestCase):

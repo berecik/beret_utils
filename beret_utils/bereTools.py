@@ -162,21 +162,3 @@ def tags(tag, text, lista=False):
         row_end = text.lower().find("</%s" % tag, row_begin)
         lista.append(text[row_begin:row_end])
         return tags(tag, text[text.lower().find('>', row_end):], lista)
-
-
-def isFloat(s):
-    try:
-        float(s)
-    except (ValueError, TypeError):
-        return False
-    else:
-        return True
-
-
-def toType(s, to_type=int):
-    try:
-        x = to_type(s)
-    except (ValueError, TypeError):
-        return x
-    else:
-        return True
