@@ -137,7 +137,7 @@ class PathData(os.PathLike):
 
     @cached_property
     def name(self) -> str:
-        return self.file_name or self.path.name
+        return str(self.file_name or self.path.name)
 
     @cached_property
     def is_dir(self) -> bool:
@@ -177,7 +177,7 @@ class PathData(os.PathLike):
 
     @cached_property
     def check(self):
-        return all(map(lambda filter: filter(self), self.filters))
+        return all(map(lambda filter_: filter_(self), self.filters))
 
     def iterator(self, patterns: Union[str, Iterable[str]] = None, **options) -> Iterable[PATH_DATA_CLASS]:
         """

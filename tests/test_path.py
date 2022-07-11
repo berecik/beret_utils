@@ -55,6 +55,29 @@ class TestPath(TestCase):
         self.assertEqual(home_path, home_path_data)
         self.assertEqual(home_path, home_expand_env)
 
+    def test_name(self):
+        file_name = 'test_path.py'
+        file_path_data = self.dir(file_name)
+        self.assertEqual(file_name, file_path_data.name)
+        self.assertEqual(str, type(file_path_data.name))
+
+    def test_abspath(self):
+        file = __file__
+        file_name = 'test_path.py'
+        absolute_file = os.path.abspath(file)
+        file_path_data = self.dir(file_name)
+        self.assertEqual(absolute_file, file_path_data.abspath)
+        self.assertEqual(str, type(file_path_data.abspath))
+
+    def test_mime_type(self):
+        file_name = 'test_path.py'
+        file_type = 'text/x-python'
+        file_path_data = self.dir(file_name)
+        self.assertEqual(file_type, file_path_data.mime_type)
+        self.assertEqual(str, type(file_path_data.mime_type))
+        file_txt = self.dir('subdir', 'test.txt')
+        self.assertEqual('text/plain', file_txt.mime_type)
+
 
 class TestPathIterator(TestCase):
     def setUp(self):
