@@ -80,18 +80,23 @@ class PathData(os.PathLike):
         return cls(file_path, *args, **kwargs)
 
     @classmethod
-    def main(cls, *args, **kwargs):
+    def main(cls, *paths, **kwargs):
         file_path = os.getcwd()
-        return cls(file_path, *args, **kwargs)
+        __main = cls(file_path, **kwargs)
+        if paths:
+            return __main(*paths)
+        else:
+            return __main
 
-    def dir(self, **options):
+    @cached_property
+    def parent(self):
         file_path = os.path.dirname(self)
-        return replace(self, file_path=file_path, **options)
+        return replace(self, file_path=file_path)
 
     def __call__(self, *paths: Union[str, Iterable[str]], **options: dict) -> PATH_DATA_CLASS:
         """
         :param paths: one file path or list of file path's elements
-        Return absolute path of give file in context of base dir.
+        Return absolute path of give file in context of base parent.
         """
         if len(paths) == 1 and paths[0] and len(paths[0]):
             if isinstance(paths[0], str):
@@ -116,6 +121,9 @@ class PathData(os.PathLike):
     def __hash__(self) -> int:
         """For order"""
         return hash(self.__fspath__())
+
+    def __eq__(self, other):
+        return self.__fspath__() == getattr(other, "__fspath__", lambda: other)()
 
     def __str__(self):
         return self.abspath
@@ -173,7 +181,14 @@ class PathData(os.PathLike):
         return mimetypes.guess_type(self.path)[0]
 
     def join(self, *paths) -> str:
-        return os.path.join(self.abspath, *paths)
+
+        if self.is_dir:
+            __path = self.path
+        else:
+            "if is a file, join to parent"
+            __path = self.parent.path
+
+        return os.path.join(__path, *paths)
 
     @cached_property
     def check(self):
@@ -245,4 +260,8 @@ class PathData(os.PathLike):
     def ls(self, patterns: Union[str, Iterable[str]] = None, **options) -> Optional[list[PATH_DATA_CLASS]]:
         return list(self.iterator(patterns, **options)) if self.is_dir else None
 
-
+    def __len__(self):
+        if not self.is_dir:
+            return None
+        assert self.is_dir
+        return len(self.ls())

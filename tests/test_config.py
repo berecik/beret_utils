@@ -16,7 +16,7 @@ class ConfigTestCase(TestCase):
             ('VALUE', 'default_value'),
             ('DIR', 'test', get_path),
             ('DIR_BIS', 'test', get_path),
-            ('SUBDIR', 'dir', join_path_value('DIR')),
+            ('SUBDIR', 'parent', join_path_value('DIR')),
             ('SUBDIR_ENV_VALUE', EnvValue('VALUE'), join_path_value('SUBDIR')),
             ('FILE', 'file', join_path_value('SUBDIR')),
         )

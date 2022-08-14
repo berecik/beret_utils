@@ -21,7 +21,7 @@ def getCmd(src, rev_begin, rev_end):
         dir = os.path.abspath(src)
         if not os.path.isdir(dir):
             dir = os.path.dirname(dir)
-        cmd = "svn diff --summarize --xml -r %(rbegin)s:%(rend)s %(dir)s" % {'dir':  dir, 'rbegin': str(rev_begin),
+        cmd = "svn diff --summarize --xml -r %(rbegin)s:%(rend)s %(dir)s" % {'parent':  dir, 'rbegin': str(rev_begin),
                                                                              'rend': str(rev_end)
         }
     return cmd
