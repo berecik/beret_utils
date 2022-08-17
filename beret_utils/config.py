@@ -17,6 +17,7 @@ from .mapping import MappingConst
 
 logger = getLogger(__name__)
 
+
 class Value:
 
     def __call__(self, *envs: dict) -> Optional[AnyStr]:
@@ -47,21 +48,24 @@ def join_path_value(dir_id):
     """
     produce a special parser with join another variable value to given path
     """
+
     class JoinPathValue(EnvValue):
         def get_value(self, env):
             if dir_id in env:
                 value = join_path(env[dir_id], self.var_name)
                 return value
+
     return JoinPathValue
 
 
 def format_string(string):
 
-    class FormatString(EnvValue):
+    class FormatString(Value):
         def get_value(self, env):
-            return string.format(env)
+            return string.format(**env)
 
-    return FormatString
+    return FormatString()
+
 
 def bool_value(value):
     try:
@@ -82,7 +86,7 @@ def expand_defaults(init):
     return (
         map(
             lambda args:
-            (lambda key, value=None, parser=str, env_key=None, parse_default=True:
+            (lambda key, value=None, parser=format_string, env_key=None, parse_default=True:
              (
                  key,
                  value,
@@ -153,7 +157,7 @@ class ConfigEnvFiles(ConfigEnv):
     def get_env_files(self) -> dict:
         env = {}
         for env_file_path in self.ENV_FILES:
-            env = read_dot_env(env_file_path, **env)
+            env = read_dot_env(env_file_path, **env) or env
         return env
 
     def get_envs(self, envs: Optional[Iterable[dict]] = None) -> list:
