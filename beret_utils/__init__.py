@@ -3,7 +3,7 @@ import json
 import pprint
 
 from .bereTools import *
-from .config import get_config, EnvValue, join_path_value, join_path
+from .config import get_config, EnvValue, join_path_value, join_path, format_string
 from .imap import Imap
 from .patterns import match
 from .singleton import Singleton

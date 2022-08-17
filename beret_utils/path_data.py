@@ -12,6 +12,10 @@ from typing import Optional
 from typing import TypeVar
 from typing import Union
 
+try:
+    from os import PathLike
+except ImportError:  # Python 3.5 support
+    from pathlib import PurePath as PathLike
 
 PATH_DATA_CLASS = TypeVar('PATH_DATA_CLASS', bound='PathData')
 DEFAULT_FILTERS = [
@@ -20,12 +24,12 @@ DEFAULT_FILTERS = [
 
 
 @dataclass(order=True)
-class PathData(os.PathLike):
+class PathData(PathLike):
     """
     Object representing all data related with data.
     """
 
-    file_path: Union[str, os.PathLike] = field(compare=True)
+    file_path: Union[str, PathLike] = field(compare=True)
     file_name: Optional[str] = field(compare=False, default=None)
     patterns: Union[str, Iterable[str]] = field(compare=False, default="*")
     dirs: bool = field(compare=False, default=True)
@@ -95,7 +99,7 @@ class PathData(os.PathLike):
 
     def __call__(self, *paths: Union[str, Iterable[str]], **options: dict) -> PATH_DATA_CLASS:
         """
-        :param paths: one file path or list of file path's elements
+        paths: one file path or list of file path's elements
         Return absolute path of give file in context of base parent.
         """
         if len(paths) == 1 and paths[0] and len(paths[0]):
@@ -157,19 +161,13 @@ class PathData(os.PathLike):
 
     @cached_property
     def created_at(self) -> Optional[datetime.datetime]:
-        try:
-            system_time = self.path.stat().st_ctime
-            return datetime.datetime.fromtimestamp(system_time)
-        except Exception as _:
-            return None
+        system_time = self.path.stat().st_ctime
+        return datetime.datetime.fromtimestamp(system_time)
 
     @cached_property
     def change_at(self) -> Optional[datetime.datetime]:
-        try:
-            system_time = self.path.stat().st_mtime
-            return datetime.datetime.fromtimestamp(system_time)
-        except Exception as _:
-            return None
+        system_time = self.path.stat().st_mtime
+        return datetime.datetime.fromtimestamp(system_time)
 
     @cached_property
     def size(self) -> int:
@@ -197,7 +195,6 @@ class PathData(os.PathLike):
     def iterator(self, patterns: Union[str, Iterable[str]] = None, **options) -> Iterable[PATH_DATA_CLASS]:
         """
         :param patterns: patterns as a list or in string separate by ';'
-        :param self.ls_patterns: default '*', default patterns value
         :yield: PathData object for each file
 
         Return files in given directory where names pass one of given patterns
@@ -225,7 +222,7 @@ class PathData(os.PathLike):
             dirs: bool = None,
             dirs_only: bool = None,
             recursive: bool = None,
-    ) -> Iterable[os.PathLike]:
+    ) -> Iterable[PathLike]:
         """
         :param recursive: walk recursively through subdirectories
         :param dirs: yield directories too
@@ -244,12 +241,12 @@ class PathData(os.PathLike):
         dirs_list: list[PATH_DATA_CLASS] = [self]
 
         while dirs_list:
-            dir = dirs_list.pop()
-            assert dir.is_dir
-            for path in dir.path.iterdir():
+            dir_ = dirs_list.pop()
+            assert dir_.is_dir
+            for path in dir_.path.iterdir():
                 if path.is_dir():
                     if recursive:
-                        dirs_list.append(replace(dir, file_path=path))
+                        dirs_list.append(replace(dir_, file_path=path))
                     if not dirs:
                         continue
                 else:

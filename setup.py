@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # Note: To use the 'upload' functionality of this file, you must:
-#   $ pip install python_utis
+#   $ pip install python_utils
 
 import io
 import os
@@ -20,7 +20,7 @@ URL = 'https://github.com/berecik/python_utils'
 EMAIL = 'beret@hipisi.org.pl'
 AUTHOR = 'Adam Beret Manczuk'
 REQUIRES_PYTHON = '>=3.9.0'
-VERSION = "0.4.5"
+VERSION = "0.4.6"
 
 REQUIRED = []
 

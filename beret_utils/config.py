@@ -55,6 +55,14 @@ def join_path_value(dir_id):
     return JoinPathValue
 
 
+def format_string(string):
+
+    class FormatString(EnvValue):
+        def get_value(self, env):
+            return string.format(env)
+
+    return FormatString
+
 def bool_value(value):
     try:
         i = float(value)
