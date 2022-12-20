@@ -86,7 +86,7 @@ def expand_defaults(init):
     return (
         map(
             lambda args:
-            (lambda key, value=None, parser=format_string, env_key=None, parse_default=True:
+            (lambda key, value=None, parser=str, env_key=None, parse_default=True:
              (
                  key,
                  value,
