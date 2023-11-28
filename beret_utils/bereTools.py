@@ -7,14 +7,14 @@ import urllib
 # fixed point Y combinator
 Y = (lambda g: (lambda f: g(lambda *arg: f(f)(*arg)))(lambda f: g(lambda *arg: f(f)(*arg))))
 # example of using Y combinator to calculate greatest common divisor by euliclean algoritm
-# gcd=lambda a,b: a if not b else nwd(b,a%b)
+# gcd=lambda a,b: a if not b else gcd(b,a%b)
 gcd = lambda a, b: Y(lambda f: lambda a, b: not b and a or f(b, a % b))(a, b)
 # function for division of rational numbers
 div = lambda a, b: (int(a) / int(b), (a % b) / gcd((a % b), b), b / gcd((a % b), b))
 
-anonim_div = lambda a, b: (int(a) / int(b), (a % b) / (
+anonim_div = lambda a, b: (int(a) // int(b), (a % b) // (
     lambda a, b: (lambda g: (lambda f: g(lambda *arg: f(f)(*arg)))(lambda f: g(lambda *arg: f(f)(*arg))))(
-        lambda f: lambda a, b: not b and a or f(b, a % b))(a, b))((a % b), b), b / (lambda a, b: (
+        lambda f: lambda a, b: not b and a or f(b, a % b))(a, b))((a % b), b), b // (lambda a, b: (
     lambda g: (lambda f: g(lambda *arg: f(f)(*arg)))(lambda f: g(lambda *arg: f(f)(*arg))))(
     lambda f: lambda a, b: not b and a or f(b, a % b))(a, b))((a % b), b))
 

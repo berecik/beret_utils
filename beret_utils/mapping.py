@@ -1,3 +1,6 @@
+from collections.abc import Iterable
+
+
 class MappingDict(dict):
 
     def __setitem__(self, key, item):
@@ -40,7 +43,7 @@ class MappingDict(dict):
         return self.__dict__.pop(*args)
 
     def __cmp__(self, dict_):
-        return self.__cmp__(self.__dict__, dict_)
+        return dict.__cmp__(self.__dict__, dict_)
 
     def __contains__(self, item):
         return item in self.__dict__
@@ -63,9 +66,16 @@ class MappingAttrs(MappingDict):
     def __delattr__(self, item):
         self.__delitem__(item)
 
-class MappingDictDefault(MappingDict):
 
+class MappingDictDefault(MappingDict):
     DEFAULT_VALUE = None
+
+    def __dir__(self) -> Iterable[str]:
+        attrs = list(super().__dir__())
+        attrs += self.__dict__.keys()
+        attrs = list(set(attrs))
+        attrs.sort()
+        return attrs
 
     def __getitem__(self, key):
         return self.__dict__[key] if key in self.__dict__ else self.DEFAULT_VALUE
