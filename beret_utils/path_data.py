@@ -257,6 +257,9 @@ class PathData(PathLike):
     def ls(self, patterns: Union[str, Iterable[str]] = None, **options) -> Optional[list[PATH_DATA_CLASS]]:
         return list(self.iterator(patterns, **options)) if self.is_dir else None
 
+    def toJSON(self) -> str:
+        return self.__str__()
+
     def __len__(self):
         if not self.is_dir:
             return None
