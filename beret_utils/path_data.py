@@ -258,7 +258,7 @@ class PathData(PathLike):
         return list(self.iterator(patterns, **options)) if self.is_dir else None
 
     def toJSON(self) -> str:
-        return self.__str__()
+        return self.abspath
 
     def __len__(self):
         if not self.is_dir:
